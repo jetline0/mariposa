@@ -93,6 +93,26 @@ fn normalize_commands(commands: Vec<concrete::Command>, seed: u64) -> Vec<concre
     commands.into_iter().map(|c| c.accept(&mut normalizer).unwrap()).collect()
 }
 
+// patterns
+fn remove_patterns(commands: Vec<concrete::Command>) -> Vec<concrete::Command> {
+    for command in &commands {
+        println!("assert: {}", command);
+        if let concrete::Command::Assert {term} = command {
+            println!("term: {}", term);
+            if let concrete::Term::Forall {vars: _, term:attributed_term} = term {
+                println!("pattern: {}", *attributed_term);
+                match *attributed_term {
+                    term => (),
+                }
+//              if let concrete::Term::Attributes {term: _, attributes} = *pattern {
+//                  println!("attributes: {}", attributes);
+//              }
+            }
+        }
+    }
+    commands
+}
+
 struct Manager {
     writer: BufWriter<Box<dyn std::io::Write>>,
     seed: u64,
@@ -194,6 +214,8 @@ fn main() {
                 let solver_seed = manager.seed as u32;
                 manager.dump(&format!("(set-option :random-seed {solver_seed})\n"));
             };
+        } else if args.perturbation == "patterns" {
+            commands = remove_patterns(commands);
         }
         manager.dump_non_info_commands(&commands);
     }
