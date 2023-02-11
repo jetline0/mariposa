@@ -96,13 +96,13 @@ fn normalize_commands(commands: Vec<concrete::Command>, seed: u64) -> Vec<concre
 // patterns
 fn remove_patterns(commands: Vec<concrete::Command>) -> Vec<concrete::Command> {
     for command in &commands {
-        println!("assert: {}", command);
+        // println!("assert: {}", command);
         if let concrete::Command::Assert {term} = command {
-            println!("term: {}", term);
+            // println!("term: {}", term);
             if let concrete::Term::Forall {vars: _, term:attributed_term} = term {
-                println!("pattern: {}", *attributed_term);
-                match *attributed_term {
-                    term => (),
+                // println!("pattern: {}", *attributed_term);
+                match attributed_term.clone() {
+                    term => println!("attributed_term: {}", *term),
                 }
 //              if let concrete::Term::Attributes {term: _, attributes} = *pattern {
 //                  println!("attributes: {}", attributes);
@@ -217,7 +217,7 @@ fn main() {
         } else if args.perturbation == "patterns" {
             commands = remove_patterns(commands);
         }
-        manager.dump_non_info_commands(&commands);
+        // manager.dump_non_info_commands(&commands);
     }
 }
 
